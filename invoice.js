@@ -46,6 +46,8 @@ $("#invoiceForm").submit(function (event){
 });
 
 function printInvoice() {
+    console.log('printInvoice function is being called'); // Log to check function execution
+
     const customerName = $("#customerName").val();
     const invoiceDate = $("#invoiceDate").val();
     const items = [];
@@ -66,65 +68,13 @@ function printInvoice() {
 
     const totalAmount = $("#totalAmount").val();
 
-    const invoiceContent = `
-<html>
-<head>
-    <title>Invoice Slip</title>
-    <style>
-        body {
-            font-family: 'Trebuchet MS', Arial, sans-serif;
-            margin: 20px;
-        }
-        h2 {
-            color: aliceblue;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            text-align: left;
-            padding: 8px;
-        }
-        .total {
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <h2>Invoice</h2>
-    <p><strong>Customer Name:</strong> ${customerName}</p>
-    <p><strong>Date and Time:</strong> ${invoiceDate}</p>
-    <table>
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Unit Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${items.map(item =>
-                `<tr>
-                    <td>${item.description}</td>
-                    <td>${item.quantity}</td>
-                    <td>${item.unitPrice}</td>
-                    <td>${item.totalItemPrice}</td>
-                </tr>`
-            ).join('')}
-        </tbody>
-    </table>
-    <p class="total">Total Amount: ${totalAmount}</p>
-</body>
-</html>`;
+    // Save data to localStorage
+    localStorage.setItem('customerName', customerName);
+    localStorage.setItem('invoiceDate', invoiceDate);
+    localStorage.setItem('invoiceItems', JSON.stringify(items));
+    localStorage.setItem('totalAmount', totalAmount);
 
-    const printWindow = window.open("", "_blank");
-    printWindow.document.open();
-    printWindow.document.write(invoiceContent);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+    // Open the invoice page
+    window.open('invoice.html', '_blank');
 }
+
