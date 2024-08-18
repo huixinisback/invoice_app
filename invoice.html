@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <title>Invoice Slip</title>
+        <style>
+            body{
+                font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                margin: 20px;
+            }
+
+            h2{
+             color:aliceblue;
+            }
+
+            table{
+                width:100%;
+                border-collapse: collapse;
+                margin-top:20px;
+            }
+
+            th,td{
+                border: 1px;
+                text-align: left;
+                padding: 8px;
+            }
+
+            .total{
+                font-weight: bold;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h2>Invoice</h2>
+        <p><strong>Customer Name:</strong> ${customerName}</p>
+        <p><strong>Date and Time:</strong> ${invoiceDate}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${items.map((item)=>
+                    <tr>
+                        <td>${item.description}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.unitPrice}</td>
+                        <td>${item.totalItem}</td>
+                    </tr>
+                    ).join()}
+            </tbody>
+        </table>
+        <p class="total">Total Amount: ${totalAmount}</p>
+    </body>
+</html>
