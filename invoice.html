@@ -7,55 +7,140 @@
     <style>
         body {
             font-family: 'Trebuchet MS', Arial, sans-serif;
-            margin: 20px;
+            margin: 40px;
+            background-color: #f5f5f5;
+            color: #333;
         }
-        h2 {
-            color: aliceblue;
+        .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .invoice-header h2 {
+            margin: 0;
+            color: #1C2120;
+            font-size: 28px;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .invoice-details p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .invoice-details span {
+            font-weight: bold;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            margin-bottom: 20px;
         }
         th, td {
             border: 1px solid #ddd;
-            text-align: left;
-            padding: 8px;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+        th {
+            background-color: #f2f2f2;
         }
         .total {
             font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .summary-table {
+            width: 50%;
+            float: right;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+        .summary-table th, .summary-table td {
+            text-align: left;
+            padding: 10px;
+            border: none;
+            font-size: 16px;
+        }
+        .summary-table th {
+            width: 50%;
         }
     </style>
 </head>
 <body>
-    <h2>Invoice</h2>
-    <p><strong>Customer Name:</strong> <span id="customerName"></span></p>
-    <p><strong>Date and Time:</strong> <span id="invoiceDate"></span></p>
-    <table>
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Unit Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody id="invoiceItems"></tbody>
-    </table>
-    <p class="total">Total Amount: <span id="totalAmount"></span></p>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h2>Invoice</h2>
+        </div>
+
+        <div class="invoice-details">
+            <p><span>Invoice No:</span> <span id="invoiceNumber"></span></p>
+            <p><span>Customer Name:</span> <span id="customerName"></span></p>
+            <p><span>Issue Date:</span> <span id="invoiceDate"></span></p>
+            <p><span>Due Date:</span> <span id="dueDate"></span></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceItems"></tbody>
+        </table>
+
+        <div class="summary-table">
+            <table>
+                <tr>
+                    <th>Sub-total:</th>
+                    <td><span id="subTotal"></span></td>
+                </tr>
+                <tr>
+                    <th>Deposit (50%):</th>
+                    <td><span id="deposit"></span></td>
+                </tr>
+                <tr>
+                    <th>Total Due:</th>
+                    <td><span id="totalAmount"></span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="clear: both;"></div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Retrieve data from localStorage
+            const invoiceNumber = localStorage.getItem('invoiceNumber');
             const customerName = localStorage.getItem('customerName');
             const invoiceDate = localStorage.getItem('invoiceDate');
+            const dueDate = localStorage.getItem('dueDate');
             const items = JSON.parse(localStorage.getItem('invoiceItems')) || [];
+            const subTotal = localStorage.getItem('subTotal');
+            const deposit = localStorage.getItem('deposit');
             const totalAmount = localStorage.getItem('totalAmount');
 
             // Populate the invoice data
+            document.getElementById('invoiceNumber').textContent = invoiceNumber;
             document.getElementById('customerName').textContent = customerName;
             document.getElementById('invoiceDate').textContent = invoiceDate;
-            document.getElementById('totalAmount').textContent = totalAmount;
+            document.getElementById('dueDate').textContent = dueDate;
+            document.getElementById('subTotal').textContent = `$${subTotal}`;
+            document.getElementById('deposit').textContent = `$${deposit}`;
+            document.getElementById('totalAmount').textContent = `$${totalAmount}`;
 
             const invoiceItemsTable = document.getElementById('invoiceItems');
             items.forEach(item => {
@@ -63,16 +148,20 @@
                 row.innerHTML = `
                     <td>${item.description}</td>
                     <td>${item.quantity}</td>
-                    <td>${item.unitPrice}</td>
-                    <td>${item.totalItemPrice}</td>
+                    <td>$${item.unitPrice}</td>
+                    <td>$${item.totalItemPrice}</td>
                 `;
                 invoiceItemsTable.appendChild(row);
             });
 
             // Clean up localStorage
+            localStorage.removeItem('invoiceNumber');
             localStorage.removeItem('customerName');
             localStorage.removeItem('invoiceDate');
+            localStorage.removeItem('dueDate');
             localStorage.removeItem('invoiceItems');
+            localStorage.removeItem('subTotal');
+            localStorage.removeItem('deposit');
             localStorage.removeItem('totalAmount');
         });
     </script>
